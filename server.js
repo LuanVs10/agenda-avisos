@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send("Projeto Agenda de Avisos - Luan Victor 🚀");
+  res.send("Projeto Agenda de Avisos - Luan Victor Souza Alves");
 });
 
 const PORT = process.env.PORT || 3000;
