@@ -4,87 +4,16 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Agenda de Avisos</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header {
-      width: 100%;
-      background: #1a1a2e;
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    header h1 {
-      color: white;
-      font-size: 1.6rem;
-      font-weight: bold;
-      letter-spacing: 0.02em;
-    }
-
-    header span {
-      background: #1565c0;
-      color: white;
-      font-size: 0.75rem;
-      padding: 4px 12px;
-      border-radius: 20px;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 24px;
-      text-align: center;
-    }
-
-    main h2 {
-      font-size: 1.8rem;
-      color: #1a1a2e;
-      margin-bottom: 12px;
-    }
-
-    main p {
-      font-size: 1rem;
-      color: #555;
-      max-width: 480px;
-      line-height: 1.6;
-      margin-bottom: 36px;
-    }
-
-    main img {
-      width: 280px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    }
-
-    footer {
-      width: 100%;
-      background: #1a1a2e;
-      color: #aaa;
-      text-align: center;
-      padding: 16px;
-      font-size: 0.8rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
   <header>
-    <h1>📋 Agenda de Avisos</h1>
-    <span>Em desenvolvimento</span>
+    <div style="display:flex; align-items:center;">
+      <h1>📋 Agenda de Avisos</h1>
+      <span class="badge">Em desenvolvimento</span>
+    </div>
+    <button class="btn btn-primary" onclick="abrirModal()">Entrar</button>
   </header>
 
   <main>
@@ -96,6 +25,32 @@
   <footer>
     Desenvolvido por Luan Victor · Faculdade · 2026
   </footer>
+
+  <!-- MODAL DE LOGIN -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>Acesso ao Sistema</h2>
+      <p class="subtitulo">Digite suas credenciais para continuar</p>
+
+      <label>E-mail</label>
+      <input type="email" id="usuario" placeholder="Digite seu e-mail"/>
+
+      <label>Senha</label>
+      <div style="position:relative;">
+        <input type="password" id="senha" placeholder="Digite sua senha" style="padding-right:40px;"/>
+        <span onclick="verSenha()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem;">👁️</span>
+      </div>
+
+      <div class="erro" id="erro">Preencha todos os campos.</div>
+
+      <div class="modal-btns">
+        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
