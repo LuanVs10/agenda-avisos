@@ -13,7 +13,10 @@
       <h1>📋 Agenda de Avisos</h1>
       <span class="badge">Em desenvolvimento</span>
     </div>
-    <button class="btn btn-primary" onclick="abrirModal()">Entrar</button>
+    <div class="header-botoes">
+      <button class="btn btn-outline-white" onclick="abrirModal('login')">Fazer Login</button>
+      <button class="btn btn-primary" onclick="abrirModal('cadastro')">Cadastrar</button>
+    </div>
   </header>
 
   <main>
@@ -27,25 +30,52 @@
   </footer>
 
   <!-- MODAL DE LOGIN -->
-  <div class="overlay" id="overlay">
+  <div class="overlay" id="overlayLogin">
     <div class="modal">
-      <h2>Acesso ao Sistema</h2>
+      <h2>Fazer Login</h2>
       <p class="subtitulo">Digite suas credenciais para continuar</p>
 
-      <label>E-mail</label>
-      <input type="email" id="usuario" placeholder="Digite seu e-mail"/>
+      <label>Usuário</label>
+      <input type="text" id="loginUsuario" placeholder="Digite seu usuário"/>
 
       <label>Senha</label>
       <div style="position:relative;">
-        <input type="password" id="senha" placeholder="Digite sua senha" style="padding-right:40px;"/>
-        <span onclick="verSenha()" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem;">👁️</span>
+        <input type="password" id="loginSenha" placeholder="Digite sua senha" style="padding-right:40px;"/>
+        <span onclick="verSenha('loginSenha')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem;">👁️</span>
       </div>
 
-      <div class="erro" id="erro">Preencha todos os campos.</div>
+      <p class="erro" id="erroLogin"></p>
 
       <div class="modal-btns">
-        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
-        <button class="btn-entrar" onclick="fazerLogin()">Entrar</button>
+        <button class="btn-cancelar" onclick="fecharModais()">Cancelar</button>
+        <button class="btn-entrar" onclick="entrar()">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CADASTRO -->
+  <div class="overlay" id="overlayCadastro">
+    <div class="modal">
+      <h2>Criar Conta</h2>
+      <p class="subtitulo">Preencha os dados para se cadastrar</p>
+
+      <label>Nome</label>
+      <input type="text" id="cadastroNome" placeholder="Digite seu nome"/>
+
+      <label>Usuário</label>
+      <input type="text" id="cadastroLogin" placeholder="Escolha um usuário"/>
+
+      <label>Senha</label>
+      <div style="position:relative;">
+        <input type="password" id="cadastroSenha" placeholder="Escolha uma senha" style="padding-right:40px;"/>
+        <span onclick="verSenha('cadastroSenha')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem;">👁️</span>
+      </div>
+
+      <p class="erro" id="erroCadastro"></p>
+
+      <div class="modal-btns">
+        <button class="btn-cancelar" onclick="fecharModais()">Cancelar</button>
+        <button class="btn-entrar" onclick="cadastrar()">Cadastrar</button>
       </div>
     </div>
   </div>

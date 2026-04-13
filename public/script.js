@@ -1,33 +1,81 @@
-function abrirModal() {
-  document.getElementById('overlay').classList.add('active');
+function abrirModal(tipo) {
+  fecharModais();
+  if (tipo === 'login') {
+    document.getElementById('overlayLogin').classList.add('active');
+  } else {
+    document.getElementById('overlayCadastro').classList.add('active');
+  }
 }
 
-function fecharModal() {
-  document.getElementById('overlay').classList.remove('active');
-  document.getElementById('erro').style.display = 'none';
-  document.getElementById('usuario').value = '';
-  document.getElementById('senha').value = '';
+function fecharModais() {
+  document.getElementById('overlayLogin').classList.remove('active');
+  document.getElementById('overlayCadastro').classList.remove('active');
+  document.getElementById('erroLogin').textContent = '';
+  document.getElementById('erroCadastro').textContent = '';
+  document.getElementById('loginUsuario').value = '';
+  document.getElementById('loginSenha').value = '';
+  document.getElementById('cadastroNome').value = '';
+  document.getElementById('cadastroLogin').value = '';
+  document.getElementById('cadastroSenha').value = '';
 }
 
-function verSenha() {
-  const input = document.getElementById('senha');
+function verSenha(id) {
+  const input = document.getElementById(id);
   input.type = input.type === 'password' ? 'text' : 'password';
 }
 
-function fazerLogin() {
-  const usuario = document.getElementById('usuario').value.trim();
-  const senha = document.getElementById('senha').value.trim();
+async function entrar() {
+  const login = document.getElementById('loginUsuario').value.trim();
+  const senha = document.getElementById('loginSenha').value.trim();
 
-  if (!usuario || !senha) {
-    document.getElementById('erro').style.display = 'block';
+  if (!login || !senha) {
+    document.getElementById('erroLogin').textContent = 'Preencha todos os campos!';
     return;
   }
 
-  // Por enquanto aceita qualquer e-mail e senha
-  // Futuramente: validar com o banco de dados
-  window.location.href = 'dashboard.html';
+  const resposta = await fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ login, senha })
+  });
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    document.getElementById('erroLogin').textContent = dados.erro;
+  } else {
+    window.location.href = 'dashboard.html';
+  }
 }
 
-document.getElementById('overlay').addEventListener('click', function(e) {
-  if (e.target === this) fecharModal();
+async function cadastrar() {
+  const nome = document.getElementById('cadastroNome').value.trim();
+  const login = document.getElementById('cadastroLogin').value.trim();
+  const senha = document.getElementById('cadastroSenha').value.trim();
+
+  if (!nome || !login || !senha) {
+    document.getElementById('erroCadastro').textContent = 'Preencha todos os campos!';
+    return;
+  }
+
+  const resposta = await fetch('/cadastrar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, login, senha })
+  });
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    document.getElementById('erroCadastro').textContent = dados.erro;
+  } else {
+    fecharModais();
+    abrirModal('login');
+    alert('Cadastro realizado! Faça login agora.');
+  }
+}
+
+// Fechar ao clicar fora
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('overlay')) fecharModais();
 });
