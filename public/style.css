@@ -42,6 +42,11 @@ header .badge {
   margin-left: 10px;
 }
 
+.header-botoes {
+  display: flex;
+  gap: 10px;
+}
+
 /* ===========================
    BOTÕES
 =========================== */
@@ -121,7 +126,7 @@ main img {
 }
 
 /* ===========================
-   MODAL DE LOGIN
+   MODAL
 =========================== */
 .overlay {
   display: none;
@@ -184,7 +189,7 @@ main img {
   color: #c0392b;
   font-size: 0.8rem;
   margin-bottom: 12px;
-  display: none;
+  min-height: 18px;
 }
 
 .modal-btns {
@@ -247,7 +252,6 @@ main img {
   font-size: 0.88rem;
 }
 
-/* Cards resumo */
 .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -275,7 +279,6 @@ main img {
   color: #888;
 }
 
-/* Tabela */
 .secao {
   background: #fff;
   border-radius: 8px;
@@ -345,4 +348,5 @@ footer {
   .cards { grid-template-columns: repeat(2, 1fr); }
   .container { padding: 16px; }
   header { padding: 14px 20px; }
+  .header-botoes { gap: 6px; }
 }
