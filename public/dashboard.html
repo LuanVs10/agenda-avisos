@@ -6,7 +6,7 @@
   <title>Agenda de Avisos — Painel</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
-<body>
+<body class="com-sidebar">
 
   <header>
     <div style="display:flex; align-items:center;">
@@ -16,91 +16,96 @@
     <button class="btn btn-outline" onclick="window.location.href='index.html'">Sair</button>
   </header>
 
-  <div class="container">
+  <div class="layout">
 
-    <div class="boas-vindas">
-      <h2>Bem-vindo ao sistema</h2>
-      <p>Acompanhe e gerencie os avisos da organização em um só lugar.</p>
+    <aside class="sidebar">
+      <nav>
+        <div class="nav-item active" onclick="window.location.href='dashboard.html'">🏠 Início</div>
+        <div class="nav-group">
+          <div class="nav-label">Cadastros</div>
+          <div class="nav-item sub" onclick="window.location.href='usuarios.html'">👤 Usuários</div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="conteudo">
+
+      <div class="boas-vindas">
+        <h2>Bem-vindo ao sistema</h2>
+        <p>Acompanhe e gerencie os avisos da organização em um só lugar.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="numero">5</div>
+          <div class="label">Avisos Ativos</div>
+        </div>
+        <div class="card">
+          <div class="numero">1</div>
+          <div class="label">Urgentes</div>
+        </div>
+        <div class="card">
+          <div class="numero">8</div>
+          <div class="label">Pessoas Cadastradas</div>
+        </div>
+        <div class="card">
+          <div class="numero">5</div>
+          <div class="label">Aguardando Leitura</div>
+        </div>
+      </div>
+
+      <div class="secao">
+        <h3>Últimos Avisos</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Aviso</th><th>Destinatário</th><th>Data</th><th>Tipo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td>Comprar arroz e feijão até quinta-feira</td>
+              <td>João da Despensa</td>
+              <td>24/03/2026</td>
+              <td><span class="tag-status tag-urgente">Urgente</span></td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Repor estoque de refrigerante para o fim de semana</td>
+              <td>Maria do Caixa</td>
+              <td>23/03/2026</td>
+              <td><span class="tag-status tag-info">Informativo</span></td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>Verificar validade dos laticínios na geladeira</td>
+              <td>Todos os funcionários</td>
+              <td>22/03/2026</td>
+              <td><span class="tag-status tag-normal">Normal</span></td>
+            </tr>
+            <tr>
+              <td>004</td>
+              <td>Pedir nota fiscal do fornecedor de óleo até sexta</td>
+              <td>Carlos do Estoque</td>
+              <td>20/03/2026</td>
+              <td><span class="tag-status tag-info">Informativo</span></td>
+            </tr>
+            <tr>
+              <td>005</td>
+              <td>Limpeza geral do depósito no sábado de manhã</td>
+              <td>Todos os funcionários</td>
+              <td>18/03/2026</td>
+              <td><span class="tag-status tag-normal">Normal</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-
-    <div class="cards">
-      <div class="card">
-        <div class="numero">5</div>
-        <div class="label">Avisos Ativos</div>
-      </div>
-      <div class="card">
-        <div class="numero">1</div>
-        <div class="label">Urgentes</div>
-      </div>
-      <div class="card">
-        <div class="numero">2</div>
-        <div class="label">Pessoas Cadastradas</div>
-      </div>
-      <div class="card">
-        <div class="numero">5</div>
-        <div class="label">Aguardando Leitura</div>
-      </div>
-    </div>
-
-    <div class="secao">
-      <h3>Últimos Avisos</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Aviso</th>
-            <th>Destinatário</th>
-            <th>Data</th>
-            <th>Tipo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>001</td>
-            <td>Comprar arroz e feijão até quinta-feira</td>
-            <td>Jesse - Dono</td>
-            <td>24/03/2026</td>
-            <td><span class="tag-status tag-urgente">Urgente</span></td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td>Repor estoque de refrigerante para o fim de semana</td>
-            <td>Silvia - Dona</td>
-            <td>23/03/2026</td>
-            <td><span class="tag-status tag-info">Informativo</span></td>
-          </tr>
-          <tr>
-            <td>003</td>
-            <td>Verificar validade dos laticínios na geladeira</td>
-            <td>Todos os funcionários</td>
-            <td>22/03/2026</td>
-            <td><span class="tag-status tag-normal">Normal</span></td>
-          </tr>
-          <tr>
-            <td>004</td>
-            <td>Pedir nota fiscal do fornecedor de óleo até sexta</td>
-            <td>Jesse - Dono</td>
-            <td>20/03/2026</td>
-            <td><span class="tag-status tag-info">Informativo</span></td>
-          </tr>
-          <tr>
-            <td>005</td>
-            <td>Limpeza geral do depósito no sábado de manhã</td>
-            <td>Todos os funcionários</td>
-            <td>18/03/2026</td>
-            <td><span class="tag-status tag-normal">Normal</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
   </div>
 
-  <!-- <footer>
-    Desenvolvido por Luan Victor · Faculdade · 2026
-  </footer> -->
-
-  <script src="script.js"></script>
+  <footer>Desenvolvido por Luan Victor · Faculdade · 2026</footer>
 
 </body>
 </html>

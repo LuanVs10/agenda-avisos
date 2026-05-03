@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda de Avisos — Usuários</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="com-sidebar">
+
+  <header>
+    <div style="display:flex; align-items:center;">
+      <h1>📋 Agenda de Avisos</h1>
+      <span class="badge">Usuários</span>
+    </div>
+    <button class="btn btn-outline" onclick="window.location.href='index.html'">Sair</button>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <nav>
+        <div class="nav-item" onclick="window.location.href='dashboard.html'">🏠 Início</div>
+        <div class="nav-group">
+          <div class="nav-label">Cadastros</div>
+          <div class="nav-item sub active" onclick="window.location.href='usuarios.html'">👤 Usuários</div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="conteudo">
+
+      <div class="secao-header">
+        <h2>👤 Usuários</h2>
+        <button class="btn btn-primary" onclick="abrirModalNovo()">+ Novo Usuário</button>
+      </div>
+
+      <div class="secao">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nome</th>
+              <th>Login</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="corpoTabela">
+            <tr><td colspan="4" style="text-align:center; color:#999;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>Desenvolvido por Luan Victor · Faculdade · 2026</footer>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlayModal">
+    <div class="modal">
+      <h2 id="modalTitulo">Novo Usuário</h2>
+      <p class="subtitulo" id="modalSubtitulo">Preencha os dados do usuário</p>
+
+      <input type="hidden" id="usuarioId"/>
+
+      <label>Nome</label>
+      <input type="text" id="inputNome" placeholder="Nome completo"/>
+
+      <label>Login</label>
+      <input type="text" id="inputLogin" placeholder="Login de acesso"/>
+
+      <label id="labelSenha">Senha</label>
+      <input type="password" id="inputSenha" placeholder="Senha"/>
+
+      <p class="erro" id="erroModal"></p>
+
+      <div class="modal-btns">
+        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-entrar" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    carregarUsuarios();
+
+    function carregarUsuarios() {
+      fetch('/usuarios')
+        .then(res => res.json())
+        .then(usuarios => {
+          const corpo = document.getElementById('corpoTabela');
+          if (usuarios.length === 0) {
+            corpo.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">Nenhum usuário cadastrado</td></tr>';
+            return;
+          }
+          corpo.innerHTML = usuarios.map(u => `
+            <tr>
+              <td>${u.usuario_id}</td>
+              <td>${u.nome}</td>
+              <td>${u.login}</td>
+              <td>
+                <button class="btn-acao btn-editar" onclick="abrirModalEditar(${u.usuario_id}, '${u.nome}', '${u.login}')">✏️ Editar</button>
+                <button class="btn-acao btn-excluir" onclick="excluir(${u.usuario_id})">🗑️ Excluir</button>
+              </td>
+            </tr>
+          `).join('');
+        });
+    }
+
+    function abrirModalNovo() {
+      document.getElementById('modalTitulo').textContent = 'Novo Usuário';
+      document.getElementById('modalSubtitulo').textContent = 'Preencha os dados do usuário';
+      document.getElementById('usuarioId').value = '';
+      document.getElementById('inputNome').value = '';
+      document.getElementById('inputLogin').value = '';
+      document.getElementById('inputSenha').value = '';
+      document.getElementById('inputSenha').placeholder = 'Senha';
+      document.getElementById('labelSenha').textContent = 'Senha';
+      document.getElementById('erroModal').textContent = '';
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function abrirModalEditar(id, nome, login) {
+      document.getElementById('modalTitulo').textContent = 'Editar Usuário';
+      document.getElementById('modalSubtitulo').textContent = 'Deixe a senha em branco para não alterar';
+      document.getElementById('usuarioId').value = id;
+      document.getElementById('inputNome').value = nome;
+      document.getElementById('inputLogin').value = login;
+      document.getElementById('inputSenha').value = '';
+      document.getElementById('inputSenha').placeholder = 'Nova senha (opcional)';
+      document.getElementById('labelSenha').textContent = 'Senha (opcional)';
+      document.getElementById('erroModal').textContent = '';
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function fecharModal() {
+      document.getElementById('overlayModal').classList.remove('active');
+    }
+
+    async function salvar() {
+      const id = document.getElementById('usuarioId').value;
+      const nome = document.getElementById('inputNome').value.trim();
+      const login = document.getElementById('inputLogin').value.trim();
+      const senha = document.getElementById('inputSenha').value.trim();
+
+      if (!nome || !login) {
+        document.getElementById('erroModal').textContent = 'Preencha nome e login!';
+        return;
+      }
+      if (!id && !senha) {
+        document.getElementById('erroModal').textContent = 'Informe uma senha!';
+        return;
+      }
+
+      const url = id ? `/usuarios/${id}` : '/cadastrar';
+      const method = id ? 'PUT' : 'POST';
+
+      const resposta = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, login, senha })
+      });
+
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        document.getElementById('erroModal').textContent = dados.erro;
+      } else {
+        fecharModal();
+        carregarUsuarios();
+      }
+    }
+
+    async function excluir(id) {
+      if (!confirm('Deseja excluir este usuário?')) return;
+      const resposta = await fetch(`/usuarios/${id}`, { method: 'DELETE' });
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        alert(dados.erro);
+      } else {
+        carregarUsuarios();
+      }
+    }
+
+    document.getElementById('overlayModal').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal();
+    });
+  </script>
+
+</body>
+</html>

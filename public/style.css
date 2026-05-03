@@ -66,18 +66,6 @@ header .badge {
   color: #fff;
 }
 
-.btn-outline {
-  background: transparent;
-  color: #aaa;
-  border: 1.5px solid #444;
-}
-.btn-outline:hover {
-  background: #c0392b;
-  color: #fff;
-  border-color: #c0392b;
-  opacity: 1;
-}
-
 .btn-outline-white {
   background: #1565c0;
   color: #fff;
@@ -90,6 +78,23 @@ header .badge {
   transition: all 0.2s;
 }
 .btn-outline-white:hover { background: #1976d2; }
+
+.btn-outline {
+  background: transparent;
+  color: #aaa;
+  border: 1.5px solid #444;
+  padding: 9px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+}
 
 /* ===========================
    MAIN (index)
@@ -123,6 +128,49 @@ main img {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   margin-bottom: 32px;
+}
+
+/* ===========================
+   LAYOUT COM SIDEBAR
+=========================== */
+.layout {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1a1a2e;
+  min-height: 100%;
+  padding: 24px 0;
+  flex-shrink: 0;
+}
+
+.nav-item {
+  padding: 12px 24px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.nav-item:hover { background: #252545; color: #fff; }
+.nav-item.active { background: #1565c0; color: #fff; }
+.nav-item.sub { padding-left: 36px; font-size: 0.85rem; }
+
+.nav-group { margin-top: 8px; }
+
+.nav-label {
+  padding: 10px 24px 4px;
+  font-size: 0.7rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.conteudo {
+  flex: 1;
+  padding: 28px 32px;
+  overflow-y: auto;
 }
 
 /* ===========================
@@ -223,16 +271,8 @@ main img {
 .btn-entrar:hover { background: #1565c0; }
 
 /* ===========================
-   DASHBOARD
+   DASHBOARD / CONTEÚDO
 =========================== */
-.container {
-  flex: 1;
-  padding: 28px 32px;
-  max-width: 1100px;
-  margin: 0 auto;
-  width: 100%;
-}
-
 .boas-vindas {
   background: #fff;
   border-left: 4px solid #1565c0;
@@ -277,6 +317,18 @@ main img {
 .card .label {
   font-size: 0.8rem;
   color: #888;
+}
+
+.secao-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.secao-header h2 {
+  font-size: 1.1rem;
+  color: #1a1a2e;
 }
 
 .secao {
@@ -330,6 +382,21 @@ tr:hover td { background: #fafafa; }
 .tag-info    { background: #e3f2fd; color: #1565c0; }
 .tag-normal  { background: #e8f5e9; color: #2e7d32; }
 
+/* Botões de ação na tabela */
+.btn-acao {
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-right: 6px;
+  transition: opacity 0.2s;
+}
+.btn-acao:hover { opacity: 0.8; }
+.btn-editar  { background: #e3f2fd; color: #1565c0; }
+.btn-excluir { background: #fde8e8; color: #c0392b; }
+
 /* ===========================
    FOOTER
 =========================== */
@@ -346,7 +413,8 @@ footer {
 =========================== */
 @media (max-width: 768px) {
   .cards { grid-template-columns: repeat(2, 1fr); }
-  .container { padding: 16px; }
+  .conteudo { padding: 16px; }
   header { padding: 14px 20px; }
   .header-botoes { gap: 6px; }
+  .sidebar { width: 160px; }
 }
