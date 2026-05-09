@@ -192,7 +192,9 @@ main img {
   border-radius: 10px;
   padding: 36px 32px;
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   animation: popIn 0.2s ease;
 }
@@ -232,6 +234,19 @@ main img {
   outline: none;
 }
 .modal input:focus { border-color: #1565c0; }
+
+.modal-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  outline: none;
+  background: #fff;
+  color: #222;
+}
+.modal-select:focus { border-color: #1565c0; }
 
 .erro {
   color: #c0392b;
@@ -382,7 +397,6 @@ tr:hover td { background: #fafafa; }
 .tag-info    { background: #e3f2fd; color: #1565c0; }
 .tag-normal  { background: #e8f5e9; color: #2e7d32; }
 
-/* Botões de ação na tabela */
 .btn-acao {
   padding: 5px 12px;
   border-radius: 5px;

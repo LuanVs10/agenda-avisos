@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda de Avisos — Tipos de Aviso</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="com-sidebar">
+
+  <header>
+    <div style="display:flex; align-items:center;">
+      <h1>📋 Agenda de Avisos</h1>
+      <span class="badge">Tipos de Aviso</span>
+    </div>
+    <button class="btn btn-outline" onclick="window.location.href='index.html'">Sair</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav>
+        <div class="nav-item" onclick="window.location.href='dashboard.html'">🏠 Início</div>
+        <div class="nav-group">
+          <div class="nav-label">Cadastros</div>
+          <div class="nav-item sub" onclick="window.location.href='usuarios.html'">👤 Usuários</div>
+          <div class="nav-item sub" onclick="window.location.href='pessoas.html'">👥 Pessoas</div>
+          <div class="nav-item sub active" onclick="window.location.href='tipos-aviso.html'">🏷️ Tipos de Aviso</div>
+          <div class="nav-item sub" onclick="window.location.href='avisos.html'">📢 Avisos</div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="conteudo">
+      <div class="secao-header">
+        <h2>🏷️ Tipos de Aviso</h2>
+        <button class="btn btn-primary" onclick="abrirModalNovo()">+ Novo Tipo</button>
+      </div>
+
+      <div class="secao">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Descrição</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="corpoTabela">
+            <tr><td colspan="3" style="text-align:center;color:#999;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>Desenvolvido por Luan Victor · Faculdade · 2026</footer>
+
+  <div class="overlay" id="overlayModal">
+    <div class="modal">
+      <h2 id="modalTitulo">Novo Tipo de Aviso</h2>
+      <p class="subtitulo">Preencha a descrição do tipo</p>
+      <input type="hidden" id="tipoId"/>
+
+      <label>Descrição *</label>
+      <input type="text" id="inputDescricao" placeholder="Ex: Urgente, Informativo..."/>
+
+      <p class="erro" id="erroModal"></p>
+
+      <div class="modal-btns">
+        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-entrar" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    carregarTipos();
+
+    function carregarTipos() {
+      fetch('/tipos-aviso').then(r => r.json()).then(tipos => {
+        const corpo = document.getElementById('corpoTabela');
+        if (tipos.length === 0) {
+          corpo.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">Nenhum tipo cadastrado</td></tr>';
+          return;
+        }
+        corpo.innerHTML = tipos.map(t => `
+          <tr>
+            <td>${t.aviso_tipo_id}</td>
+            <td>${t.descricao}</td>
+            <td>
+              <button class="btn-acao btn-editar" onclick="abrirModalEditar(${t.aviso_tipo_id},'${t.descricao}')">✏️ Editar</button>
+              <button class="btn-acao btn-excluir" onclick="excluir(${t.aviso_tipo_id})">🗑️ Excluir</button>
+            </td>
+          </tr>
+        `).join('');
+      });
+    }
+
+    function abrirModalNovo() {
+      document.getElementById('modalTitulo').textContent = 'Novo Tipo de Aviso';
+      document.getElementById('tipoId').value = '';
+      document.getElementById('inputDescricao').value = '';
+      document.getElementById('erroModal').textContent = '';
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function abrirModalEditar(id, descricao) {
+      document.getElementById('modalTitulo').textContent = 'Editar Tipo de Aviso';
+      document.getElementById('tipoId').value = id;
+      document.getElementById('inputDescricao').value = descricao;
+      document.getElementById('erroModal').textContent = '';
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function fecharModal() {
+      document.getElementById('overlayModal').classList.remove('active');
+    }
+
+    async function salvar() {
+      const id = document.getElementById('tipoId').value;
+      const descricao = document.getElementById('inputDescricao').value.trim();
+
+      if (!descricao) {
+        document.getElementById('erroModal').textContent = 'Preencha a descrição!';
+        return;
+      }
+
+      const url = id ? `/tipos-aviso/${id}` : '/tipos-aviso';
+      const method = id ? 'PUT' : 'POST';
+
+      const resposta = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ descricao })
+      });
+
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        document.getElementById('erroModal').textContent = dados.erro;
+      } else {
+        fecharModal();
+        carregarTipos();
+      }
+    }
+
+    async function excluir(id) {
+      if (!confirm('Deseja excluir este tipo?')) return;
+      const resposta = await fetch(`/tipos-aviso/${id}`, { method: 'DELETE' });
+      const dados = await resposta.json();
+      if (!resposta.ok) alert(dados.erro);
+      else carregarTipos();
+    }
+
+    document.getElementById('overlayModal').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal();
+    });
+  </script>
+
+</body>
+</html>

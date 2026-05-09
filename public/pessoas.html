@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agenda de Avisos — Pessoas</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body class="com-sidebar">
+
+  <header>
+    <div style="display:flex; align-items:center;">
+      <h1>📋 Agenda de Avisos</h1>
+      <span class="badge">Pessoas</span>
+    </div>
+    <button class="btn btn-outline" onclick="window.location.href='index.html'">Sair</button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav>
+        <div class="nav-item" onclick="window.location.href='dashboard.html'">🏠 Início</div>
+        <div class="nav-group">
+          <div class="nav-label">Cadastros</div>
+          <div class="nav-item sub" onclick="window.location.href='usuarios.html'">👤 Usuários</div>
+          <div class="nav-item sub active" onclick="window.location.href='pessoas.html'">👥 Pessoas</div>
+          <div class="nav-item sub" onclick="window.location.href='tipos-aviso.html'">🏷️ Tipos de Aviso</div>
+          <div class="nav-item sub" onclick="window.location.href='avisos.html'">📢 Avisos</div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="conteudo">
+      <div class="secao-header">
+        <h2>👥 Pessoas</h2>
+        <button class="btn btn-primary" onclick="abrirModalNovo()">+ Nova Pessoa</button>
+      </div>
+
+      <div class="secao">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>Tipo</th><th>Ações</th></tr>
+          </thead>
+          <tbody id="corpoTabela">
+            <tr><td colspan="6" style="text-align:center;color:#999;">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>Desenvolvido por Luan Victor · Faculdade · 2026</footer>
+
+  <div class="overlay" id="overlayModal">
+    <div class="modal">
+      <h2 id="modalTitulo">Nova Pessoa</h2>
+      <p class="subtitulo">Preencha os dados da pessoa</p>
+      <input type="hidden" id="pessoaId"/>
+
+      <label>Nome *</label>
+      <input type="text" id="inputNome" placeholder="Nome completo"/>
+      <p class="erro" id="erroNome"></p>
+
+      <label>CPF *</label>
+      <input type="text" id="inputCpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCpf(this)"/>
+      <p class="erro" id="erroCpf"></p>
+
+      <label>Nascimento</label>
+      <input type="date" id="inputNascimento"/>
+
+      <label>Telefone</label>
+      <input type="text" id="inputTelefone" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)"/>
+
+      <label>Tipo de Pessoa *</label>
+      <select id="inputTipo" class="modal-select">
+        <option value="">Selecione...</option>
+      </select>
+      <p class="erro" id="erroTipo"></p>
+
+      <p class="erro" id="erroModal"></p>
+
+      <div class="modal-btns">
+        <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-entrar" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    carregarPessoas();
+    carregarTipos();
+
+    function mascaraCpf(input) {
+      let v = input.value.replace(/\D/g, '');
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d)/, '$1.$2');
+      v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      input.value = v;
+    }
+
+    function mascaraTelefone(input) {
+      let v = input.value.replace(/\D/g, '');
+      v = v.replace(/^(\d{2})(\d)/, '($1) $2');
+      v = v.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+      input.value = v;
+    }
+
+    function validarCpf(cpf) {
+      cpf = cpf.replace(/\D/g, '');
+      if (cpf.length !== 11) return false;
+      if (/^(\d)\1+$/.test(cpf)) return false;
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+      let resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      if (resto !== parseInt(cpf[9])) return false;
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+      resto = (soma * 10) % 11;
+      if (resto === 10 || resto === 11) resto = 0;
+      return resto === parseInt(cpf[10]);
+    }
+
+    function carregarTipos() {
+      fetch('/tipos-pessoa').then(r => r.json()).then(tipos => {
+        const sel = document.getElementById('inputTipo');
+        tipos.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.pessoa_tipo_id;
+          opt.textContent = t.descricao;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    function carregarPessoas() {
+      fetch('/pessoas').then(r => r.json()).then(pessoas => {
+        const corpo = document.getElementById('corpoTabela');
+        if (pessoas.length === 0) {
+          corpo.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">Nenhuma pessoa cadastrada</td></tr>';
+          return;
+        }
+        corpo.innerHTML = pessoas.map(p => `
+          <tr>
+            <td>${p.pessoa_id}</td>
+            <td>${p.nome}</td>
+            <td>${p.cpf}</td>
+            <td>${p.telefone || '-'}</td>
+            <td>${p.tipo_descricao || '-'}</td>
+            <td>
+              <button class="btn-acao btn-editar" onclick="abrirModalEditar(${p.pessoa_id},'${p.nome}','${p.cpf}','${p.nascimento || ''}','${p.telefone || ''}','${p.pessoa_tipo_id || ''}')">✏️ Editar</button>
+              <button class="btn-acao btn-excluir" onclick="excluir(${p.pessoa_id})">🗑️ Excluir</button>
+            </td>
+          </tr>
+        `).join('');
+      });
+    }
+
+    function limparErros() {
+      document.getElementById('erroNome').textContent = '';
+      document.getElementById('erroCpf').textContent = '';
+      document.getElementById('erroTipo').textContent = '';
+      document.getElementById('erroModal').textContent = '';
+    }
+
+    function abrirModalNovo() {
+      document.getElementById('modalTitulo').textContent = 'Nova Pessoa';
+      document.getElementById('pessoaId').value = '';
+      document.getElementById('inputNome').value = '';
+      document.getElementById('inputCpf').value = '';
+      document.getElementById('inputNascimento').value = '';
+      document.getElementById('inputTelefone').value = '';
+      document.getElementById('inputTipo').value = '';
+      limparErros();
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function abrirModalEditar(id, nome, cpf, nascimento, telefone, tipo) {
+      document.getElementById('modalTitulo').textContent = 'Editar Pessoa';
+      document.getElementById('pessoaId').value = id;
+      document.getElementById('inputNome').value = nome;
+      document.getElementById('inputCpf').value = cpf;
+      document.getElementById('inputNascimento').value = nascimento ? nascimento.split('T')[0] : '';
+      document.getElementById('inputTelefone').value = telefone;
+      document.getElementById('inputTipo').value = tipo;
+      limparErros();
+      document.getElementById('overlayModal').classList.add('active');
+    }
+
+    function fecharModal() {
+      document.getElementById('overlayModal').classList.remove('active');
+    }
+
+    async function salvar() {
+      limparErros();
+
+      const id = document.getElementById('pessoaId').value;
+      const nome = document.getElementById('inputNome').value.trim();
+      const cpf = document.getElementById('inputCpf').value.trim();
+      const nascimento = document.getElementById('inputNascimento').value;
+      const telefone = document.getElementById('inputTelefone').value.trim();
+      const pessoa_tipo_id = document.getElementById('inputTipo').value;
+
+      let temErro = false;
+
+      if (!nome) {
+        document.getElementById('erroNome').textContent = 'O nome é obrigatório!';
+        temErro = true;
+      }
+
+      if (!cpf) {
+        document.getElementById('erroCpf').textContent = 'O CPF é obrigatório!';
+        temErro = true;
+      } else if (!validarCpf(cpf)) {
+        document.getElementById('erroCpf').textContent = 'CPF inválido!';
+        temErro = true;
+      }
+
+      if (!pessoa_tipo_id) {
+        document.getElementById('erroTipo').textContent = 'Selecione o tipo de pessoa!';
+        temErro = true;
+      }
+
+      if (temErro) return;
+
+      const url = id ? `/pessoas/${id}` : '/pessoas';
+      const method = id ? 'PUT' : 'POST';
+
+      const resposta = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, cpf, nascimento, telefone, pessoa_tipo_id })
+      });
+
+      const dados = await resposta.json();
+      if (!resposta.ok) {
+        if (dados.erro.includes('CPF')) {
+          document.getElementById('erroCpf').textContent = dados.erro;
+        } else {
+          document.getElementById('erroModal').textContent = dados.erro;
+        }
+      } else {
+        fecharModal();
+        carregarPessoas();
+      }
+    }
+
+    async function excluir(id) {
+      if (!confirm('Deseja excluir esta pessoa?')) return;
+      const resposta = await fetch(`/pessoas/${id}`, { method: 'DELETE' });
+      const dados = await resposta.json();
+      if (!resposta.ok) alert(dados.erro);
+      else carregarPessoas();
+    }
+
+    document.getElementById('overlayModal').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal();
+    });
+  </script>
+
+</body>
+</html>
